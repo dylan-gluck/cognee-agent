@@ -70,9 +70,32 @@ uv run ty check main.py
 
 ## Supported Languages
 
-`python`, `javascript`, `typescript`, `java`, `csharp`, `go`, `rust`, `cpp`, `c`
+| Language | AST Extraction | Features |
+|----------|----------------|----------|
+| Python | Full | imports, classes, functions, dependencies |
+| TypeScript | Full | imports, exports, classes, functions, interfaces, types, enums, methods |
+| JavaScript | File-level | source code indexing only |
+| Java, C#, Go, Rust, C/C++ | File-level | source code indexing only |
 
-Note: Only Python has full AST extraction (imports, classes, functions). Other languages get file-level indexing.
+### TypeScript Support
+
+Full AST extraction via `typescript_extractor` module using tree-sitter:
+
+- **Imports**: default, namespace, named, side-effect, type-only
+- **Exports**: named, default, re-exports, type-only
+- **Functions**: declarations, arrow functions, function expressions, async
+- **Classes**: declarations, abstract, methods (static/async/private/getters/setters)
+- **Types**: interfaces, type aliases, enums
+
+```python
+from typescript_extractor import get_typescript_dependencies
+
+code_file = await get_typescript_dependencies(
+    repo_path="/path/to/repo",
+    script_path="/path/to/file.ts",
+    detailed_extraction=True
+)
+```
 
 ## Pipelines
 
