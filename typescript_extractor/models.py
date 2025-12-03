@@ -1,4 +1,5 @@
 from typing import Optional, List
+from pydantic import Field
 from cognee.low_level import DataPoint
 from cognee.shared.CodeGraphEntities import CodeFile as BaseCodeFile
 
@@ -65,11 +66,11 @@ class MethodDefinition(DataPoint):
 
 class TypeScriptCodeFile(BaseCodeFile):
     """Extended CodeFile with TypeScript-specific fields."""
-    provides_interface_definition: Optional[List[InterfaceDefinition]] = []
-    provides_type_alias: Optional[List[TypeAliasDefinition]] = []
-    provides_enum_definition: Optional[List[EnumDefinition]] = []
-    exports: Optional[List[ExportStatement]] = []
-    provides_method_definition: Optional[List[MethodDefinition]] = []
+    provides_interface_definition: List[InterfaceDefinition] = Field(default_factory=list)
+    provides_type_alias: List[TypeAliasDefinition] = Field(default_factory=list)
+    provides_enum_definition: List[EnumDefinition] = Field(default_factory=list)
+    exports: List[ExportStatement] = Field(default_factory=list)
+    provides_method_definition: List[MethodDefinition] = Field(default_factory=list)
 
 
 TypeScriptCodeFile.model_rebuild()

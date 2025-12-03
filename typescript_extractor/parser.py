@@ -1,4 +1,3 @@
-import os
 import aiofiles
 import tree_sitter_typescript as tstypescript
 from tree_sitter import Language, Parser, Tree

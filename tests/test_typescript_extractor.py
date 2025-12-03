@@ -4,7 +4,13 @@ This tests Phase 1 basic extraction capabilities.
 """
 import asyncio
 import os
+import sys
 import tempfile
+from pathlib import Path
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from typescript_extractor import get_typescript_dependencies
 
 
@@ -53,7 +59,7 @@ async function fetchData() {
             detailed_extraction=False
         )
 
-        print(f"   ✓ CodeFile created")
+        print("   ✓ CodeFile created")
         print(f"   - Name: {code_file.name}")
         print(f"   - Language: {code_file.language}")
         print(f"   - Has source code: {code_file.source_code is not None}")
@@ -67,23 +73,26 @@ async function fetchData() {
             detailed_extraction=True
         )
 
-        print(f"   ✓ CodeFile created with detailed extraction")
+        print("   ✓ CodeFile created with detailed extraction")
         print(f"   - Name: {code_file.name}")
         print(f"   - Language: {code_file.language}")
 
         # Check imports
-        print(f"\n3. Imports extracted: {len(code_file.depends_on)}")
-        for imp in code_file.depends_on:
+        depends_on = code_file.depends_on or []
+        print(f"\n3. Imports extracted: {len(depends_on)}")
+        for imp in depends_on:
             print(f"   - {imp.name} from '{imp.module}'")
 
         # Check functions
-        print(f"\n4. Functions extracted: {len(code_file.provides_function_definition)}")
-        for func in code_file.provides_function_definition:
+        functions = code_file.provides_function_definition or []
+        print(f"\n4. Functions extracted: {len(functions)}")
+        for func in functions:
             print(f"   - {func.name}")
 
         # Check classes
-        print(f"\n5. Classes extracted: {len(code_file.provides_class_definition)}")
-        for cls in code_file.provides_class_definition:
+        classes = code_file.provides_class_definition or []
+        print(f"\n5. Classes extracted: {len(classes)}")
+        for cls in classes:
             print(f"   - {cls.name}")
 
         print("\n" + "=" * 60)
@@ -93,16 +102,16 @@ async function fetchData() {
         # Verify acceptance criteria
         criteria = {
             "✅ Can parse .ts files": True,
-            f"✅ Default imports extracted": len(code_file.depends_on) >= 2,
-            f"✅ Function declarations extracted": len(code_file.provides_function_definition) >= 3,
-            f"✅ Class declarations extracted": len(code_file.provides_class_definition) >= 1,
-            f"✅ CodeFile has proper fields": all([
+            "✅ Default imports extracted": len(depends_on) >= 2,
+            "✅ Function declarations extracted": len(functions) >= 3,
+            "✅ Class declarations extracted": len(classes) >= 1,
+            "✅ CodeFile has proper fields": all([
                 code_file.id,
                 code_file.name == "test.ts",
                 code_file.file_path == test_file,
                 code_file.language == "typescript"
             ]),
-            f"✅ detailed_extraction modes work": True,
+            "✅ detailed_extraction modes work": True,
         }
 
         for criterion, passed in criteria.items():
@@ -152,11 +161,11 @@ export class Component extends React.Component {
             detailed_extraction=True
         )
 
-        print(f"✓ TSX file parsed successfully")
+        print("✓ TSX file parsed successfully")
         print(f"  - File: {code_file.name}")
-        print(f"  - Imports: {len(code_file.depends_on)}")
-        print(f"  - Functions: {len(code_file.provides_function_definition)}")
-        print(f"  - Classes: {len(code_file.provides_class_definition)}")
+        print(f"  - Imports: {len(code_file.depends_on or [])}")
+        print(f"  - Functions: {len(code_file.provides_function_definition or [])}")
+        print(f"  - Classes: {len(code_file.provides_class_definition or [])}")
         print("=" * 60)
 
 

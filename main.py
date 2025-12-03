@@ -97,7 +97,7 @@ async def ingest_codebase(
     from cognee.tasks.documents import classify_documents, extract_chunks_from_documents
     from cognee.tasks.graph import extract_graph_from_data
     from cognee.tasks.ingestion import ingest_data
-    from cognee.tasks.repo_processor import get_non_py_files, get_repo_file_dependencies
+    from repo_processor import get_non_py_files, get_repo_file_dependencies
     from cognee.tasks.storage import add_data_points
     from cognee.tasks.summarization import summarize_text
 

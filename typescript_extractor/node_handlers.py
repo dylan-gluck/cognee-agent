@@ -1,3 +1,4 @@
+from typing import Callable
 from tree_sitter import Node
 from cognee.shared.CodeGraphEntities import (
     ImportStatement,
@@ -10,7 +11,7 @@ from .models import InterfaceDefinition, TypeAliasDefinition, EnumDefinition, Ex
 logger = get_logger()
 
 
-def find_node(nodes: list[Node], condition: callable) -> Node | None:
+def find_node(nodes: list[Node], condition: Callable[[Node], bool]) -> Node | None:
     """
     Find and return the first node that satisfies the given condition.
 

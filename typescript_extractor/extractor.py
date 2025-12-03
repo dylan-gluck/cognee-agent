@@ -1,11 +1,5 @@
 from uuid import NAMESPACE_OID, uuid5
 from tree_sitter import Node
-from cognee.shared.CodeGraphEntities import (
-    CodeFile,
-    ImportStatement,
-    FunctionDefinition,
-    ClassDefinition,
-)
 from cognee.shared.logging_utils import get_logger
 
 from .parser import TypeScriptFileParser
@@ -78,6 +72,10 @@ async def get_typescript_dependencies(
         source_code=None,  # Don't duplicate source code when extracting parts
         file_path=script_path,
         language="typescript",
+        # Ensure base class lists are initialized
+        depends_on=[],
+        provides_function_definition=[],
+        provides_class_definition=[],
     )
 
     # Extract code parts from AST
