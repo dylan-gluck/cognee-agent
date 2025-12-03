@@ -15,8 +15,16 @@ from cognee.tasks.repo_processor.get_local_dependencies import get_local_script_
 
 from typescript_extractor import get_typescript_dependencies
 
-# Re-export for convenience
-from cognee.tasks.repo_processor import get_non_py_files  # noqa: F401
+# Import cognee's version to wrap it
+from cognee.tasks.repo_processor import get_non_py_files as _cognee_get_non_py_files
+
+
+async def get_non_py_files(repo_path):
+    """Wrapper for cognee's get_non_py_files that handles pipeline data wrapping."""
+    # Handle cognee pipeline wrapping the path in a list
+    if isinstance(repo_path, list):
+        repo_path = repo_path[0] if repo_path else None
+    return await _cognee_get_non_py_files(repo_path)
 
 
 # Constants from cognee
@@ -130,7 +138,7 @@ async def make_codefile_stub(
 
 
 async def get_repo_file_dependencies(
-    repo_path: str,
+    repo_path,
     detailed_extraction: bool = False,
     supported_languages: Optional[List[str]] = None,
     excluded_paths: Optional[List[str]] = None,
@@ -142,7 +150,7 @@ async def get_repo_file_dependencies(
     that adds TypeScript support via our local typescript_extractor.
 
     Args:
-        repo_path: Path to repository root
+        repo_path: Path to repository root (may be wrapped in list by cognee pipeline)
         detailed_extraction: If True, extract imports/functions/classes
         supported_languages: List of languages to process (None = all)
         excluded_paths: Glob patterns to exclude
@@ -151,6 +159,10 @@ async def get_repo_file_dependencies(
         Repository node, then CodeFile nodes for each source file
     """
     import asyncio
+
+    # Handle cognee pipeline wrapping the path in a list
+    if isinstance(repo_path, list):
+        repo_path = repo_path[0] if repo_path else None
 
     # Yield repository first
     repo = Repository(
